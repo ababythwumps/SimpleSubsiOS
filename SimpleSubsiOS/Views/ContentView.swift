@@ -68,7 +68,6 @@ struct ContentView: View {
 							.padding()
 					} else {
 						ScrollView {
-							// TODO: Display all the orders
 							ForEach(appViewModel.upcomingOrders, id: \.id) { order in
 								OrderDisplayView(order: order, screenWidth: screenWidth, screenHeight: screenHeight)
 							}
@@ -99,6 +98,7 @@ struct ContentView: View {
 							.font(.title2)
 							.bold()
 							.glassEffect(.clear.tint(.green))
+							.foregroundStyle(.white)
 					}
 				}.buttonStyle(.plain)
 			}
