@@ -13,6 +13,7 @@ struct ContentView: View {
 
 	@State private var screenWidth: CGFloat = 0
 	@State private var screenHeight: CGFloat = 0
+	@State private var isShowingSettings: Bool = false
 	
     var body: some View {
 		ZStack {
@@ -47,6 +48,7 @@ struct ContentView: View {
 						
 						Button {
 							// TODO: Show the settings view
+							isShowingSettings = true
 						} label: {
 							Image(systemName: "gearshape")
 								.resizable()
@@ -90,7 +92,7 @@ struct ContentView: View {
 				Spacer()
 				
 				Button {
-					
+					// TODO: Show ordering screen
 				} label: {
 					ZStack {
 						Text("New Order")
@@ -101,6 +103,10 @@ struct ContentView: View {
 							.foregroundStyle(.white)
 					}
 				}.buttonStyle(.plain)
+			}
+			
+			.sheet(isPresented: $isShowingSettings) {
+				SettingsView(appViewModel: appViewModel)
 			}
 		}
 	}

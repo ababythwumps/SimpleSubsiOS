@@ -42,5 +42,5 @@ struct OrderDisplayView: View {
 }
 
 #Preview {
-	OrderDisplayView(order: Order(id: UUID().uuidString, user: User(id: UUID().uuidString, name: "John", email: "example@gmail.com", allergies: []), date: Date(), sandwhich: Sandwhich(bread: "Dutch Crunch", meat: "Turkey", cheese: "None", condiments: ["Pesto", "Mayo"], extras: [], chips: true))/*, screenWidth: 50, screenHeight: 50*/)
+	OrderDisplayView(order: Order(id: UUID().uuidString, user: User(id: UUID().uuidString, firstName: "John", lastName: "Doe", email: "example@gmail.com", grade: 10, allergies: []), date: Date(), sandwhich: Sandwhich(bread: "Dutch Crunch", meat: "Turkey", cheese: "None", condiments: ["Pesto", "Mayo"], extras: [], chips: true))/*, screenWidth: 50, screenHeight: 50*/)
 }

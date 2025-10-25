@@ -9,7 +9,9 @@ import Foundation
 
 public struct User: Codable {
 	public var id: String
-	public var name: String
+	public var firstName: String
+	public var lastName: String
 	public var email: String
+	public var grade: Int
 	public var allergies: [String]
 }
