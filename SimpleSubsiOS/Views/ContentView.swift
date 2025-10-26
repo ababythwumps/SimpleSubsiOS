@@ -47,7 +47,6 @@ struct ContentView: View {
 						Spacer()
 						
 						Button {
-							// TODO: Show the settings view
 							isShowingSettings = true
 						} label: {
 							Image(systemName: "gearshape")
