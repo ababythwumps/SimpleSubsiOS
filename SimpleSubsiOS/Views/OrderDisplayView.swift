@@ -8,18 +8,23 @@
 import SwiftUI
 
 struct OrderDisplayView: View {
-	var order: Order
+	@State var order: Order
 	
 	var screenWidth: CGFloat = 405
 	var screenHeight: CGFloat = 880
 	
 	var body: some View {
 		ExpandableView(thumbnail: ThumbnailView {
-			Text(order.date, format: Date.FormatStyle().month(.abbreviated).day(.twoDigits))
-				.font(.title2)
-				.bold()
-				.frame(width: screenWidth * 0.4, height: screenHeight/15)
-				.padding(.trailing, screenWidth * 0.5)
+			HStack {
+				Text(order.date, format: Date.FormatStyle().month(.abbreviated).day(.twoDigits))
+					.font(.title2)
+					.bold()
+					.frame(width: screenWidth * 0.4, height: screenHeight/15)
+					.padding(.trailing, screenWidth * 0.5)
+				
+				Image(systemName: "plus")
+					.padding(.trailing,screenWidth * 0.1)
+			}.frame(width: screenWidth * 0.9)
 		}, expanded: ExpandedView {
 			VStack {
 				Text(order.date, format: Date.FormatStyle().month(.abbreviated).day(.twoDigits))
@@ -28,30 +33,84 @@ struct OrderDisplayView: View {
 					.padding(.trailing, screenWidth/2)
 					.padding(.top, -6.5)
 				
-				Text("\(order.user.allergies.count > 0 ? order.user.allergies.joined(separator: ", ") : "no allergies")")
+				HStack {
+					Text("Bread: \(order.sandwhich.bread)")
+						.font(.title3)
+					
+					Spacer()
+					
+					Button {
+						// TODO: Show bread options
+					} label: {
+						Image(systemName: "chevron.left")
+					}.buttonStyle(.plain)
+				}.frame(width: screenWidth * 0.6)
+					.padding()
 				
-				Text("\(order.sandwhich.bread), \(order.sandwhich.cheese), \(order.sandwhich.chips ? "chips" : "no chips")")
-				Text("\(order.sandwhich.condiments.joined(separator: ", ")),")
-				Text("\(order.sandwhich.extras.count > 0 ? order.sandwhich.extras.joined(separator: ", ") : "no extras")")
+				HStack {
+					Text("Meat: \(order.sandwhich.meat)")
+						.font(.title3)
+					
+					Spacer()
+					
+					Button {
+						// TODO: Show cheese options
+					} label: {
+						Image(systemName: "chevron.left")
+					}.buttonStyle(.plain)
+				}.frame(width: screenWidth * 0.6)
+					.padding(.bottom)
+				
+				HStack {
+					Text("Cheese: \(order.sandwhich.cheese)")
+						.font(.title3)
+					
+					Spacer()
+					
+					Button {
+						// TODO: Show cheese options
+					} label: {
+						Image(systemName: "chevron.left")
+					}.buttonStyle(.plain)
+				}.frame(width: screenWidth * 0.6)
+					.padding(.bottom)
+				
+				HStack {
+					Text("Condiments: \(order.sandwhich.condiments.isEmpty ? "None" : String(describing: order.sandwhich.condiments.first!))\(order.sandwhich.condiments.count > 1 && !order.sandwhich.condiments.isEmpty ? "..." : "")")
+						.font(.title3)
+					
+					Spacer()
+					
+					Button {
+						// TODO: Show condiments options
+					} label: {
+						Image(systemName: "chevron.left")
+					}.buttonStyle(.plain)
+				}.frame(width: screenWidth * 0.6)
+					.padding(.bottom)
+				
+				HStack {
+					Text("Extras: \(order.sandwhich.extras.isEmpty ? "None" : String(describing: order.sandwhich.extras.first!))\(order.sandwhich.extras.count > 1 && !order.sandwhich.extras.isEmpty ? "..." : "")")
+						.font(.title3)
+					
+					Spacer()
+					
+					Button {
+						// TODO: Show extras options
+					} label: {
+						Image(systemName: "chevron.left")
+					}.buttonStyle(.plain)
+				}.frame(width: screenWidth * 0.6)
+					.padding(.bottom)
+				
+				HStack {
+					Toggle("Chips: ", isOn: $order.sandwhich.chips)
+						.font(.title3)
+				}.frame(width: screenWidth * 0.6)
 				
 				HStack {
 					Button {
-						
-					} label: {
-						ZStack {
-							RoundedRectangle(cornerRadius: 20)
-								.frame(width: screenWidth * 0.25, height: screenHeight/20)
-								.foregroundStyle(.gray)
-							
-							Text("Edit")
-								.foregroundStyle(.primary)
-								.font(.headline)
-								.bold()
-						}
-					}.buttonStyle(.plain)
-					
-					Button {
-						
+						// TODO: Delete order
 					} label: {
 						ZStack {
 							RoundedRectangle(cornerRadius: 20)
@@ -59,10 +118,15 @@ struct OrderDisplayView: View {
 								.foregroundStyle(.secondary)
 								.foregroundStyle(.red)
 							
-							Text("Delete")
-								.foregroundStyle(.white)
-								.font(.headline)
-								.bold()
+							HStack {
+								Image(systemName: "trash")
+									.foregroundStyle(.white)
+								
+								Text("Delete")
+									.foregroundStyle(.white)
+									.font(.headline)
+									.bold()
+							}
 						}
 					}.buttonStyle(.plain)
 				}
@@ -173,3 +237,4 @@ struct ExpandedView: View, Identifiable {
 		}
 	}
 }
+
