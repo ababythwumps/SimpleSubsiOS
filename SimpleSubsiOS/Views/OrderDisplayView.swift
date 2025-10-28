@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct OrderDisplayView: View {
-	@State var order: Order
+	@ObservedObject var appViewModel: AppViewModel
+	
+	@Binding var order: Order
 	
 	var screenWidth: CGFloat = 405
 	var screenHeight: CGFloat = 880
@@ -33,75 +35,50 @@ struct OrderDisplayView: View {
 					.padding(.trailing, screenWidth/2)
 					.padding(.top, -6.5)
 				
-				HStack {
+				Collapsible(label: {
 					Text("Bread: \(order.sandwhich.bread)")
 						.font(.title3)
-					
-					Spacer()
-					
-					Button {
-						// TODO: Show bread options
-					} label: {
-						Image(systemName: "chevron.left")
-					}.buttonStyle(.plain)
-				}.frame(width: screenWidth * 0.6)
-					.padding()
+				}, content: {
+					ListPickerView(selectionOptions: appViewModel.breadOptions, selectedSingle: $order.sandwhich.bread)
+						.padding(.trailing)
+						.padding(.top, -15)
+				}).frame(width: screenWidth * 0.6)
 				
-				HStack {
+				Collapsible(label: {
 					Text("Meat: \(order.sandwhich.meat)")
 						.font(.title3)
-					
-					Spacer()
-					
-					Button {
-						// TODO: Show cheese options
-					} label: {
-						Image(systemName: "chevron.left")
-					}.buttonStyle(.plain)
-				}.frame(width: screenWidth * 0.6)
-					.padding(.bottom)
+				}, content: {
+					ListPickerView(selectionOptions: appViewModel.meatOptions, selectedSingle: $order.sandwhich.meat)
+						.padding(.trailing)
+						.padding(.top, -15)
+				}).frame(width: screenWidth * 0.6)
 				
-				HStack {
+				Collapsible(label: {
 					Text("Cheese: \(order.sandwhich.cheese)")
 						.font(.title3)
-					
-					Spacer()
-					
-					Button {
-						// TODO: Show cheese options
-					} label: {
-						Image(systemName: "chevron.left")
-					}.buttonStyle(.plain)
-				}.frame(width: screenWidth * 0.6)
-					.padding(.bottom)
+				}, content: {
+					ListPickerView(selectionOptions: appViewModel.cheeseOptions, selectedSingle: $order.sandwhich.cheese)
+						.padding(.trailing)
+						.padding(.top, -15)
+				}).frame(width: screenWidth * 0.6)
 				
-				HStack {
+				Collapsible(label: {
 					Text("Condiments: \(order.sandwhich.condiments.isEmpty ? "None" : String(describing: order.sandwhich.condiments.first!))\(order.sandwhich.condiments.count > 1 && !order.sandwhich.condiments.isEmpty ? "..." : "")")
 						.font(.title3)
-					
-					Spacer()
-					
-					Button {
-						// TODO: Show condiments options
-					} label: {
-						Image(systemName: "chevron.left")
-					}.buttonStyle(.plain)
-				}.frame(width: screenWidth * 0.6)
-					.padding(.bottom)
+				}, content: {
+					MultipleListPickerView(selectionOptions: appViewModel.condimentsOptions, selected: $order.sandwhich.condiments)
+						//.padding(.trailing)
+						.padding(.top, -15)
+						.frame(width: screenWidth * 0.8)
+				})
 				
-				HStack {
+				Collapsible(label: {
 					Text("Extras: \(order.sandwhich.extras.isEmpty ? "None" : String(describing: order.sandwhich.extras.first!))\(order.sandwhich.extras.count > 1 && !order.sandwhich.extras.isEmpty ? "..." : "")")
 						.font(.title3)
-					
-					Spacer()
-					
-					Button {
-						// TODO: Show extras options
-					} label: {
-						Image(systemName: "chevron.left")
-					}.buttonStyle(.plain)
-				}.frame(width: screenWidth * 0.6)
-					.padding(.bottom)
+				}, content: {
+					MultipleListPickerView(selectionOptions: appViewModel.extrasOptions, selected: $order.sandwhich.extras, screenWidth: screenWidth)
+						.padding(.top, -15)
+				}).frame(width: screenWidth * 0.6)
 				
 				HStack {
 					Toggle("Chips: ", isOn: $order.sandwhich.chips)
@@ -138,103 +115,5 @@ struct OrderDisplayView: View {
 }
 
 #Preview {
-	OrderDisplayView(order: Order(id: UUID().uuidString, user: User(id: UUID().uuidString, firstName: "John", lastName: "Doe", email: "example@gmail.com", grade: 10, allergies: []), date: Date(), sandwhich: Sandwhich(bread: "Dutch Crunch", meat: "Turkey", cheese: "None", condiments: ["Pesto", "Mayo"], extras: [], chips: true)))
+	OrderDisplayView(appViewModel: AppViewModel(), order: .constant(Order(id: UUID().uuidString, user: User(id: UUID().uuidString, firstName: "John", lastName: "Doe", email: "example@gmail.com", grade: 10, allergies: []), date: Date(), sandwhich: Sandwhich(bread: "Dutch Crunch", meat: "Turkey", cheese: "None", condiments: ["Pesto", "Mayo"], extras: [], chips: true))))
 }
-
-struct ExpandableView: View {
-	@Namespace private var namespace
-	@State private var show = false
-	
-	var thumbnail: ThumbnailView
-	var expanded: ExpandedView
-	
-	var thumbnailViewBackgroundColor: Color = .gray.opacity(0.8)
-	var expandedViewBackgroundColor: Color = .gray
-	
-	var thumbnailViewCornerRadius: CGFloat = 20
-	var expandedViewCornerRadius: CGFloat = 20
-	
-	var body: some View {
-		ZStack {
-			if !show {
-				thumbnailView()
-			} else {
-				expandedView()
-			}
-		}
-		.onTapGesture {
-			if !show {
-				withAnimation (.spring(response: 0.6, dampingFraction: 0.8)){
-					show.toggle()
-				}
-			}
-		}
-	}
-	
-	@ViewBuilder
-	private func thumbnailView() -> some View {
-		ZStack {
-			thumbnail
-				.matchedGeometryEffect(id: "view", in: namespace)
-		}
-		.background(
-			thumbnailViewBackgroundColor.matchedGeometryEffect(id: "background", in: namespace)
-		)
-		.mask(
-			RoundedRectangle(cornerRadius: thumbnailViewCornerRadius, style: .continuous)
-				.matchedGeometryEffect(id: "mask", in: namespace)
-		)
-	}
-	
-	@ViewBuilder
-	private func expandedView() -> some View {
-		ZStack {
-			expanded
-				.matchedGeometryEffect(id: "view", in: namespace)
-			.background(
-				expandedViewBackgroundColor
-					.matchedGeometryEffect(id: "background", in: namespace)
-			)
-			.mask(
-				RoundedRectangle(cornerRadius: expandedViewCornerRadius, style: .continuous)
-					.matchedGeometryEffect(id: "mask", in: namespace)
-			)
-
-			Button {
-				withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-					show.toggle()
-				}
-			} label: {
-				Image(systemName: "xmark")
-					.foregroundStyle(.primary)
-			}
-			.buttonStyle(.plain)
-			.padding()
-			.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-			.matchedGeometryEffect(id: "mask", in: namespace)
-		}
-	}
-}
-
-struct ThumbnailView: View, Identifiable {
-	var id = UUID()
-	@ViewBuilder var content: any View
-	
-	var body: some View {
-		ZStack {
-			AnyView(content)
-		}
-	}
-}
-
-struct ExpandedView: View, Identifiable {
-	var id = UUID()
-	@ViewBuilder var content: any View
-	
-	var body: some View {
-		ZStack {
-			AnyView(content)
-		}
-	}
-}
-
