@@ -14,4 +14,5 @@ public struct User: Codable {
 	public var email: String
 	public var grade: Int
 	public var allergies: [String]
+	public var presets: [Preset]
 }

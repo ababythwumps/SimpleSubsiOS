@@ -12,6 +12,11 @@ struct OrderDisplayView: View {
 	
 	@Binding var order: Order
 	
+	@State private var showingPresetNameAlert = false
+	@State private var presetName = ""
+	
+	@State private var showingPresetListAlert = false
+	
 	var screenWidth: CGFloat = 405
 	var screenHeight: CGFloat = 880
 	
@@ -67,8 +72,9 @@ struct OrderDisplayView: View {
 						.font(.title3)
 				}, content: {
 					MultipleListPickerView(selectionOptions: appViewModel.condimentsOptions, selected: $order.sandwhich.condiments)
-						//.padding(.trailing)
+						.font(.caption)
 						.padding(.top, -15)
+						.padding(.leading, 5)
 						.frame(width: screenWidth * 0.8)
 				})
 				
@@ -87,6 +93,64 @@ struct OrderDisplayView: View {
 				
 				HStack {
 					Button {
+						showingPresetListAlert.toggle()
+					} label: {
+						ZStack {
+							RoundedRectangle(cornerRadius: 20)
+								.frame(width: screenWidth * 0.3, height: screenHeight/20)
+								.foregroundStyle(.secondary)
+								.foregroundStyle(.blue)
+							
+							HStack {
+								Image(systemName: "fork.knife")
+									.foregroundStyle(.white)
+								
+								Text("Use Preset")
+									.foregroundStyle(.white)
+									.font(.callout)
+									.bold()
+							}
+						}
+					}.confirmationDialog("Presets", isPresented: $showingPresetListAlert) {
+						ForEach(appViewModel.user.presets, id: \.name) { preset in
+							Button(preset.name) {
+								order.sandwhich = preset.sandwhich
+							}
+						}
+						Button("Cancel", role: .cancel) { }
+					} message: {
+						Text("Select a Preset")
+					}
+					
+					Button {
+						showingPresetNameAlert.toggle()
+					} label: {
+						ZStack {
+							RoundedRectangle(cornerRadius: 20)
+								.frame(width: screenWidth * 0.32, height: screenHeight/20)
+								.foregroundStyle(.secondary)
+								.foregroundStyle(.blue)
+							
+							HStack {
+								Image(systemName: "square.and.pencil")
+									.foregroundStyle(.white)
+								
+								Text("Make Preset")
+									.foregroundStyle(.white)
+									.font(.callout)
+									.bold()
+							}
+						}
+					}.alert("Name your preset", isPresented: $showingPresetNameAlert) {
+						TextField("Preset Name", text: $presetName)
+						Button("OK") {
+							appViewModel.user.presets.append(Preset(name: presetName, sandwhich: order.sandwhich))
+						}
+					}
+				}
+				
+				HStack {
+					Button {
 						// TODO: Delete order
 					} label: {
 						ZStack {
@@ -101,7 +165,7 @@ struct OrderDisplayView: View {
 								
 								Text("Delete")
 									.foregroundStyle(.white)
-									.font(.headline)
+									.font(.callout)
 									.bold()
 							}
 						}
@@ -115,5 +179,5 @@ struct OrderDisplayView: View {
 }
 
 #Preview {
-	OrderDisplayView(appViewModel: AppViewModel(), order: .constant(Order(id: UUID().uuidString, user: User(id: UUID().uuidString, firstName: "John", lastName: "Doe", email: "example@gmail.com", grade: 10, allergies: []), date: Date(), sandwhich: Sandwhich(bread: "Dutch Crunch", meat: "Turkey", cheese: "None", condiments: ["Pesto", "Mayo"], extras: [], chips: true))))
+	OrderDisplayView(appViewModel: AppViewModel(), order: .constant(Order(id: UUID().uuidString, user: User(id: UUID().uuidString, firstName: "John", lastName: "Doe", email: "example@gmail.com", grade: 10, allergies: [], presets: []), date: Date(), sandwhich: Sandwhich(bread: "Dutch Crunch", meat: "Turkey", cheese: "None", condiments: ["Pesto", "Mayo"], extras: [], chips: true))))
 }
