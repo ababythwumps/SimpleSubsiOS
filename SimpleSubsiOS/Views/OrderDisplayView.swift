@@ -44,7 +44,8 @@ struct OrderDisplayView: View {
 					Text("Bread: \(order.sandwhich.bread)")
 						.font(.title3)
 				}, content: {
-					ListPickerView(selectionOptions: appViewModel.breadOptions, selectedSingle: $order.sandwhich.bread)
+					ListPickerView(selectionOptions: appViewModel.breadOptions,
+								   selectedSingle: $order.sandwhich.bread)
 						.padding(.trailing)
 						.padding(.top, -15)
 				}).frame(width: screenWidth * 0.6)
@@ -179,5 +180,7 @@ struct OrderDisplayView: View {
 }
 
 #Preview {
+	@Previewable @State var sandwhich = Sandwhich(bread: "Dutch Crunch", meat: "Turkey", cheese: "None", condiments: ["Pesto", "Mayo"], extras: [], chips: true)
+	
 	OrderDisplayView(appViewModel: AppViewModel(), order: .constant(Order(id: UUID().uuidString, user: User(id: UUID().uuidString, firstName: "John", lastName: "Doe", email: "example@gmail.com", grade: 10, allergies: [], presets: []), date: Date(), sandwhich: Sandwhich(bread: "Dutch Crunch", meat: "Turkey", cheese: "None", condiments: ["Pesto", "Mayo"], extras: [], chips: true))))
 }

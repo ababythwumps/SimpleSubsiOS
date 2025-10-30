@@ -69,11 +69,15 @@ struct ContentView: View {
 							.padding()
 					} else {
 						ScrollView {
-							ForEach(appViewModel.upcomingOrders.indices, id: \.self) { index in
-								OrderDisplayView(appViewModel: appViewModel, order: $appViewModel.upcomingOrders[index], screenWidth: screenWidth, screenHeight: screenHeight)
+							ForEach($appViewModel.upcomingOrders) { $order in
+								OrderDisplayView(appViewModel: appViewModel,
+												 order: $order,
+												 screenWidth: screenWidth,
+												 screenHeight: screenHeight)
 							}
-						}.padding()
-							.ignoresSafeArea()
+						}
+						.padding()
+						.ignoresSafeArea()
 					}
 				}
 				.onAppear {
