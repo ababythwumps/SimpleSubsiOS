@@ -115,7 +115,8 @@ struct OrderDisplayView: View {
 					}.confirmationDialog("Presets", isPresented: $showingPresetListAlert) {
 						ForEach(appViewModel.user.presets, id: \.name) { preset in
 							Button(preset.name) {
-								order.sandwhich = preset.sandwhich
+								order.sandwhich = preset.sandwhich.copy()
+								print(order.sandwhich.bread, preset.sandwhich.bread)
 							}
 						}
 						Button("Cancel", role: .cancel) { }
@@ -145,7 +146,8 @@ struct OrderDisplayView: View {
 					}.alert("Name your preset", isPresented: $showingPresetNameAlert) {
 						TextField("Preset Name", text: $presetName)
 						Button("OK") {
-							appViewModel.user.presets.append(Preset(name: presetName, sandwhich: order.sandwhich))
+							let newPreset = Preset(name: presetName, sandwhich: order.sandwhich.copy())
+							appViewModel.user.presets.append(newPreset)
 						}
 					}
 				}
@@ -184,3 +186,4 @@ struct OrderDisplayView: View {
 	
 	OrderDisplayView(appViewModel: AppViewModel(), order: .constant(Order(id: UUID().uuidString, user: User(id: UUID().uuidString, firstName: "John", lastName: "Doe", email: "example@gmail.com", grade: 10, allergies: [], presets: []), date: Date(), sandwhich: Sandwhich(bread: "Dutch Crunch", meat: "Turkey", cheese: "None", condiments: ["Pesto", "Mayo"], extras: [], chips: true))))
 }
+

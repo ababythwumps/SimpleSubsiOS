@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import Combine
+import SwiftUI
 
 public struct Order: Codable, Identifiable {
-	public var id = UUID().uuidString
+	public var id: String
 	public var user: User
 	public var date: Date
 	public var sandwhich: Sandwhich
