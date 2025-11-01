@@ -9,11 +9,18 @@ import Foundation
 import Combine
 import SwiftUI
 
-public struct Order: Codable, Identifiable {
+public class Order: Codable, Identifiable {
 	public var id: String
 	public var user: User
 	public var date: Date
 	public var sandwhich: Sandwhich
+
+	public init(id: String, user: User, date: Date, sandwhich: Sandwhich) {
+		self.id = id
+		self.user = user
+		self.date = date
+		self.sandwhich = sandwhich
+	}
 }
 
 extension Order: Equatable {
