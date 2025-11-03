@@ -154,7 +154,7 @@ struct OrderDisplayView: View {
 				
 				HStack {
 					Button {
-						// TODO: Delete order
+						appViewModel.upcomingOrders.removeAll { $0.id == order.id }
 					} label: {
 						ZStack {
 							RoundedRectangle(cornerRadius: 20)

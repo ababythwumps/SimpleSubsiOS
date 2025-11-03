@@ -14,6 +14,8 @@ struct ContentView: View {
 	@State private var screenWidth: CGFloat = 0
 	@State private var screenHeight: CGFloat = 0
 	@State private var isShowingSettings: Bool = false
+	@State private var isShwoingOrderDatePicker: Bool = false
+	@State private var newOrderDate: Date = Date()
 	
     var body: some View {
 		ZStack {
@@ -74,6 +76,7 @@ struct ContentView: View {
 												 order: $order,
 												 screenWidth: screenWidth,
 												 screenHeight: screenHeight)
+								.padding(.bottom, 7)
 							}
 						}
 						.padding()
@@ -96,7 +99,7 @@ struct ContentView: View {
 				Spacer()
 				
 				Button {
-					// TODO: Show ordering screen
+					isShwoingOrderDatePicker.toggle()
 				} label: {
 					ZStack {
 						Text("New Order")
@@ -111,6 +114,22 @@ struct ContentView: View {
 			
 			.sheet(isPresented: $isShowingSettings) {
 				SettingsView(appViewModel: appViewModel)
+			}
+			.popover(isPresented: $isShwoingOrderDatePicker) {
+				DatePicker(
+					"Select Date",
+					selection: $newOrderDate,
+					displayedComponents: .date
+				)
+				.datePickerStyle(.graphical)
+				.padding()
+				.presentationDetents([.medium])
+				.onChange(of: newOrderDate) { _, _ in
+					isShwoingOrderDatePicker = false
+					if !appViewModel.upcomingOrders.contains(where: { $0.date == newOrderDate }) {
+						appViewModel.upcomingOrders.append(Order(id: UUID().uuidString, user: appViewModel.user, date: newOrderDate, sandwhich: Sandwhich(bread: appViewModel.breadOptions.first ?? "", meat: appViewModel.meatOptions.first ?? "", cheese: appViewModel.cheeseOptions.first ?? "", condiments: [], extras: [], chips: false)))
+					}
+				}
 			}
 		}
 	}
