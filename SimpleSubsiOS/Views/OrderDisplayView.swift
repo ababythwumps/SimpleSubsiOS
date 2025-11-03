@@ -154,7 +154,7 @@ struct OrderDisplayView: View {
 				
 				HStack {
 					Button {
-						appViewModel.upcomingOrders.removeAll { $0.id == order.id }
+						appViewModel.upcomingOrders.removeAll { $0.date == order.date }
 					} label: {
 						ZStack {
 							RoundedRectangle(cornerRadius: 20)
